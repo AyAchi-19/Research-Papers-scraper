@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Scholar Research Papers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Research Papers scraper</h1>
+            <p>find all relative Research Papers based on your keyword </p>
+        </header>
+
+        <section class="search-section">
+            <form method="GET" class="search-form">
+                <label for="keyword">Enter Keyword:</label>
+                <input type="text" id="keyword" name="keyword" value="{{ keyword }}" placeholder="Enter a keyword..." required>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        {% if keyword %}
+        <section class="results-section">
+            <h2>Results for "{{ keyword }}":</h2>
+            <p class="keyword-counter">Keyword has been mentioned {{ keyword_counter }} times in the top 100 search results.</p>
+            <p class="keyword-page-mentions">Keyword was mentioned {{ keyword_mentions_on_page }} times on this page.</p>
+
+            {% if results %}
+            <ul class="results-list">
+                {% for result in results %}
+                    <li class="result-card">
+                        <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                        <p>{{ result.snippet }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No results found.</p>
+            {% endif %}
+
+            <div class="pagination">
+                <p>Showing page {{ current_page }} of {{ total_pages }} ({{ total_results }} results found)</p>
+                <div>
+                    {% if current_page > 1 %}
+                        <a href="{{ url_for('index', page=current_page - 1, keyword=keyword) }}" class="pagination-button">Previous</a>
+                    {% endif %}
+                    {% if current_page < total_pages %}
+                        <a href="{{ url_for('index', page=current_page + 1, keyword=keyword) }}" class="pagination-button">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
